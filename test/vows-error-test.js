@@ -1,3 +1,4 @@
+require("setimmediate");
 var path   = require('path'),
     events = require('events'),
     assert = require('assert'),
@@ -8,7 +9,7 @@ function doSomethingAsync(callback) {
   	var err = null;
   	var testValue = 'a';
 
-  	process.nextTick(function() {
+  	setImmediate(function() {
   		  callback(err, testValue);
   	});
 }
@@ -17,7 +18,7 @@ function doSomethingAsyncWithError(callback) {
   	var err = true;
   	var testValue = 'a';
 
-  	process.nextTick(function() {
+  	setImmediate(function() {
   		  callback(err, testValue);
   	});
 }

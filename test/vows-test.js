@@ -1,3 +1,4 @@
+require("setimmediate");
 var path   = require('path'),
     events = require('events'),
     assert = require('assert'),
@@ -6,7 +7,7 @@ var path   = require('path'),
 
 var api = vows.prepare({
     get: function (id, callback) {
-        process.nextTick(function () { callback(null, id) });
+        setImmediate(function () { callback(null, id) });
     },
     version: function () { return '1.0' }
 }, ['get']);
@@ -14,7 +15,7 @@ var api = vows.prepare({
 var promiser = function (val) {
     return function () {
         var promise = new(events.EventEmitter);
-        process.nextTick(function () { promise.emit('success', val) });
+        setImmediate(function () { promise.emit('success', val) });
         return promise;
     }
 };
@@ -182,7 +183,7 @@ vows.describe("Vows").addBatch({
     "A topic emitting an error": {
         topic: function () {
             var promise = new(events.EventEmitter);
-            process.nextTick(function () {
+            setImmediate(function () {
                 promise.emit("error", 404);
             });
             return promise;
@@ -195,7 +196,7 @@ vows.describe("Vows").addBatch({
     "A topic not emitting an error": {
         topic: function () {
             var promise = new(events.EventEmitter);
-            process.nextTick(function () {
+            setImmediate(function () {
                 promise.emit("success", true);
             });
             return promise;
@@ -212,7 +213,7 @@ vows.describe("Vows").addBatch({
         "when successful": {
             topic: function () {
                 var that = this;
-                process.nextTick(function () {
+                setImmediate(function () {
                     that.callback(null, "OK");
                 });
             },
@@ -227,7 +228,7 @@ vows.describe("Vows").addBatch({
         "when unsuccessful": {
             topic: function () {
                 function async(callback) {
-                    process.nextTick(function () {
+                    setImmediate(function () {
                         callback("ERROR");
                     });
                 }
@@ -369,7 +370,7 @@ vows.describe("Vows with teardowns").addBatch({
         "with a subcontext" : {
             topic: function (topic) {
                 var that = this;
-                process.nextTick(function () {
+                setImmediate(function () {
                     that.callback(null, topic);
                 });
             },
@@ -386,19 +387,19 @@ vows.describe("Vows with sub events").addBatch({
             var topic = new(events.EventEmitter);
             topic.emit('before', 'before');
 
-            process.nextTick(function () {
+            setImmediate(function () {
                 topic.emit('request', 'request_data');
             });
 
-            process.nextTick(function () {
+            setImmediate(function () {
                 topic.emit('end', 'end_data');
             });
 
-            process.nextTick(function () {
+            setImmediate(function () {
                 topic.emit('nested', 'empty_nest');
             });
 
-            process.nextTick(function () {
+            setImmediate(function () {
                 topic.emit('success', 'legacey_data');
             });
 
@@ -447,7 +448,7 @@ vows.describe("Vows with sub events").addBatch({
             require('util').inherits(MyEmitter, events.EventEmitter);
     
             var topic = new(MyEmitter);
-            process.nextTick(function () {
+            setImmediate(function () {
                 topic.emit('success', 'Legacy Does not Catch');
             });
     
@@ -497,7 +498,7 @@ vows.describe('Async topic is passed to vows with topic-less subcontext').addBat
     'Async 42': {
         topic: function () {
             var callback = this.callback;
-            process.nextTick(function () {
+            setImmediate(function () {
                 callback(null, 42);
             });
         },
